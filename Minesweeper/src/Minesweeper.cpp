@@ -76,40 +76,123 @@ void bomber(int bomb,int size)
 			}
 		}
 
-		if(board[x-1][y-1]->mines==false & x>=1 & x<=size & y>=1 & y<=size)
+		if(board[x-1][y-1]->mines==false) 
 		{
-			board[x-1][y-1]->surr++;
+			if(x>=1)
+			{
+				if(x<=size)
+				{
+					if(y>=1)
+					{
+						if(y<=size)
+						{
+							board[x-1][y-1]->surr++;
+						}
+					}
+				} 
+			}
 		}
 
-		if(board[x+1][y-1]->mines==false & x>=1 & x<=size & y>=1 & y<=size)
+		if(board[x+1][y-1]->mines==false) 
 		{
-			board[x+1][y-1]->surr++;
-		}
-
-		if(board[x-1][y]->mines==false & x>=1 & x<=size & y>=1 & y<=size)
-		{
-			board[x-1][y]->surr++;
-		}
-		
-		if(board[x+1][y]->mines==false & x>=1 & x<=size & y>=1 & y<=size)
-		{
-			board[x+1][y]->surr++;
-		}
-		
-		if(board[x-1][y+1]->mines==false & x>=1 & x<=size & y>=1 & y<=size)
-		{
-			board[x-1][y+1]->surr++;
+			if(x>=1)
+			{
+				if(x<=size)
+				{
+					if(y>=1)
+					{
+						if(y<=size)
+						{
+							board[x+1][y-1]->surr++;
+						}
+					}
+				}
+			}
 		}
 		
-		if(board[x][y+1]->mines==false & x>=1 & x<=size & y>=1 & y<=size)
+		if(board[x-1][y]->mines==false)
 		{
-
-			board[x][y+1]->surr++;
+			if(x>=1)
+			{
+				if(x<=size)
+				{
+					if(y>=1)
+					{
+						if(y<=size)
+						{
+							board[x-1][y]->surr++;
+						}
+					}
+				}
+			}
 		}
 		
-		if(board[x+1][y+1]->mines==false & x>=1 & x<=size & y>=1 & y<=size)
+		if(board[x+1][y]->mines==false)
 		{
-			board[x+1][y+1]->surr++;
+			if(x>=1)
+			{
+				if(x<=size)
+				{
+					if(y>=1)
+					{
+						if(y<=size)
+						{
+							board[x+1][y]->surr++;
+						}
+					}
+				}
+			}
+		}
+		
+		if(board[x-1][y+1]->mines==false)
+		{
+			if(x>=1)
+			{
+				if(x<=size)
+				{
+					if(y>=1)
+					{
+						if(y<=size)
+						{
+							board[x-1][y+1]->surr++;
+						}
+					}
+				}
+			}
+		}
+		
+		if(board[x][y+1]->mines==false)
+		{
+			if(x>=1)
+			{
+				if(x<=size)
+				{
+					if(y>=1)
+					{
+						if(y<=size)
+						{
+							board[x][y+1]->surr++;
+						}
+					}
+				}
+			}
+		}
+		
+		if(board[x+1][y+1]->mines==false)
+		{
+			if(x>=1)
+			{
+				if(x<=size)
+				{
+					if(y>=1)
+					{
+						if(y<=size)
+						{
+							board[x+1][y+1]->surr++;
+						}
+					}
+				}
+			}
 		}
 
 
