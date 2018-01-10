@@ -54,51 +54,149 @@ void flood(int x, int y)
 	}
 	if(x!=1 && y!=1)
 	{
-		if(board[x-1][y-1]->mines==false)
+		if(board[x-1][y-1]->surr>=1)
 		{
 			board[x-1][y-1]->status=1;
+			total--;
+			flood(x,y-1);
+			flood(x+1,y-1);
+			flood(x-1,y);
+			flood(x+1,y);
+			flood(x-1,y+1);
+			flood(x,y+1);
+			flood(x+1,y+1);
+		}
+		else
+		{
+			board[x-1][y-1]->status=1;
+			total--;
+			flood(x-1,y-1);
 		}
 	}
 	if(x!=size && y!=1)
 	{
-		if(board[x+1][y-1]->mines==false)
+		if(board[x+1][y-1]->surr>=1)
 		{
 			board[x+1][y-1]->status=1;
+			total--;
+			flood(x-1,y-1);
+			flood(x,y-1);
+			flood(x-1,y);
+			flood(x+1,y);
+			flood(x-1,y+1);
+			flood(x,y+1);
+			flood(x+1,y+1);
+		}
+		else
+		{
+			board[x+1][y-1]->status=1;
+			total--;
+			flood(x+1,y-1);
 		}
 	}
 	if(x!=1)
 	{
-		if(board[x-1][y]->mines==false)
+		if(board[x-1][y]->surr>=1)
 		{
 			board[x-1][y]->status=1;
+			total--;
+			flood(x-1,y-1);
+			flood(x+1,y-1);
+			flood(x,y-1);
+			flood(x+1,y);
+			flood(x-1,y+1);
+			flood(x,y+1);
+			flood(x+1,y+1);
+		}
+		else
+		{
+			board[x-1][y]->status=1;
+			total--;
+			flood(x-1,y);
 		}
 	}
 	if(x!=size)
 	{
-		if(board[x+1][y]->mines==false)
+		if(board[x+1][y]->surr>=1)
 		{
 			board[x+1][y]->status=1;
+			total--;
+			flood(x-1,y-1);
+			flood(x+1,y-1);
+			flood(x-1,y);
+			flood(x,y-1);
+			flood(x-1,y+1);
+			flood(x,y+1);
+			flood(x+1,y+1);
+		}
+		else
+		{
+			board[x+1][y]->status=1;
+			total--;
+			flood(x+1,y);
 		}
 	}
 	if(x!=1 && y!=size)
 	{
-		if(board[x-1][y+1]->mines==false)
+		if(board[x-1][y+1]->surr>=1)
 		{
 			board[x-1][y+1]->status=1;
+			total--;
+			flood(x-1,y-1);
+			flood(x+1,y-1);
+			flood(x-1,y);
+			flood(x+1,y);
+			flood(x,y-1);
+			flood(x,y+1);
+			flood(x+1,y+1);
+		}
+		else
+		{
+			board[x-1][y+1]->status=1;
+			total--;
+			flood(x-1,y+1);
 		}
 	}
 	if(y!=size)
 	{
-		if(board[x][y+1]->mines==false)
+		if(board[x][y+1]->surr>=1)
 		{
 			board[x][y+1]->status=1;
+			total--;
+			flood(x-1,y-1);
+			flood(x+1,y-1);
+			flood(x-1,y);
+			flood(x+1,y);
+			flood(x-1,y+1);
+			flood(x,y-1);
+			flood(x+1,y+1);
+		}
+		else
+		{
+			board[x][y+1]->status=1;
+			total--;
+			flood(x,y+1);
 		}
 	}
 	if(x!=size && y!=size)
 	{
-		if(board[x+1][y+1]->mines==false)
+		if(board[x+1][y+1]->surr>=1)
 		{
 			board[x+1][y+1]->status=1;
+			total--;
+			flood(x-1,y-1);
+			flood(x+1,y-1);
+			flood(x-1,y);
+			flood(x+1,y);
+			flood(x-1,y+1);
+			flood(x,y+1);
+			flood(x,y-1);
+		}
+		else
+		{
+			board[x+1][y+1]->status=1;
+			total--;
+			flood(x+1,y+1);
 		}
 	}
 }
