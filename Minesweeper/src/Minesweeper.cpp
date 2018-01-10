@@ -54,16 +54,26 @@ void print(int size)
 
 void bomber(int bomb,int size)
 {
-	cout<<"pass";
 	for(int ctr=1;ctr<=bomb;ctr++)
 	{
-		cout<<"pass";
 		auto x = Random::get(1,size);
 		auto y = Random::get(1,size);
 		board[x][y]->mines=true;
-		if(board[x][y-1]->mines==false & x>=1 & x<=size & y>=1 & y<=size)
+		if(board[x][y-1]->mines==false)
 		{
-			board[x][y-1]->surr++;
+			if(x>=1)
+			{
+				if(x<=size)
+				{
+					if(y>=1)
+					{
+						if(y<=size)
+						{
+							board[x][y-1]->surr++;
+						}
+					}
+				}
+			}
 		}
 
 		if(board[x-1][y-1]->mines==false & x>=1 & x<=size & y>=1 & y<=size)
@@ -99,7 +109,6 @@ void bomber(int bomb,int size)
 		
 		if(board[x+1][y+1]->mines==false & x>=1 & x<=size & y>=1 & y<=size)
 		{
-			cout<<"pass8";
 			board[x+1][y+1]->surr++;
 		}
 
