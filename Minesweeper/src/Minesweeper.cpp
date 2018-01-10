@@ -12,7 +12,8 @@ struct block
 {
 	int surr=0;
 	bool mines=false;
-} ;
+	char flag='O';
+};
 
 struct block * board[50][50];
 
@@ -23,11 +24,7 @@ void print(int size)
 	{
 		cout<<"  ";
 		cout<<ctr;
-		if(ctr>=10)
-		{
-
-		}
-		else
+		if(ctr>=!10)
 		{
 			cout<<" ";
 		}
@@ -39,7 +36,14 @@ void print(int size)
 		for(int ctr2=1;ctr2<=size;ctr2++)
 		{
 			cout<<"| ";
-			cout<<board[ctr2][ctr1]->surr;
+			if(board[ctr2][ctr1]->flag=='O')
+			{
+				cout<<board[ctr2][ctr1]->surr;
+			}
+			else
+			{
+				cout<<board[ctr2][ctr1]->flag;
+			}
 			cout<<" ";
 		}
 		cout<<"|";
@@ -50,51 +54,55 @@ void print(int size)
 
 void bomber(int bomb,int size)
 {
+	cout<<"pass";
 	for(int ctr=1;ctr<=bomb;ctr++)
 	{
+		cout<<"pass";
 		auto x = Random::get(1,size);
 		auto y = Random::get(1,size);
 		board[x][y]->mines=true;
-
-		if(board[x][y-1]->mines==false && x>=1 && x<=size && y>=1 && y<=size)
+		if(board[x][y-1]->mines==false & x>=1 & x<=size & y>=1 & y<=size)
 		{
 			board[x][y-1]->surr++;
 		}
 
-		if(board[x-1][y-1]->mines==false && x>=1 && x<=size && y>=1 && y<=size)
+		if(board[x-1][y-1]->mines==false & x>=1 & x<=size & y>=1 & y<=size)
 		{
 			board[x-1][y-1]->surr++;
 		}
 
-		if(board[x+1][y-1]->mines==false && x>=1 && x<=size && y>=1 && y<=size)
+		if(board[x+1][y-1]->mines==false & x>=1 & x<=size & y>=1 & y<=size)
 		{
 			board[x+1][y-1]->surr++;
 		}
 
-		if(board[x-1][y]->mines==false && x>=1 && x<=size && y>=1 && y<=size)
+		if(board[x-1][y]->mines==false & x>=1 & x<=size & y>=1 & y<=size)
 		{
 			board[x-1][y]->surr++;
 		}
 		
-		if(board[x+1][y]->mines==false && x>=1 && x<=size && y>=1 && y<=size)
+		if(board[x+1][y]->mines==false & x>=1 & x<=size & y>=1 & y<=size)
 		{
 			board[x+1][y]->surr++;
 		}
 		
-		if(board[x-1][y+1]->mines==false && x>=1 && x<=size && y>=1 && y<=size)
+		if(board[x-1][y+1]->mines==false & x>=1 & x<=size & y>=1 & y<=size)
 		{
 			board[x-1][y+1]->surr++;
 		}
 		
-		if(board[x][y+1]->mines==false && x>=1 && x<=size && y>=1 && y<=size)
+		if(board[x][y+1]->mines==false & x>=1 & x<=size & y>=1 & y<=size)
 		{
+
 			board[x][y+1]->surr++;
 		}
 		
-		if(board[x+1][y+1]->mines==false && x>=1 && x<=size && y>=1 && y<=size)
+		if(board[x+1][y+1]->mines==false & x>=1 & x<=size & y>=1 & y<=size)
 		{
+			cout<<"pass8";
 			board[x+1][y+1]->surr++;
 		}
+
 
 		/*board[x-1][y-1]->surr++;
 
@@ -108,8 +116,8 @@ void bomber(int bomb,int size)
 
 		board[x][y+1]->surr++;
 
-		board[x+1][y+1]->surr++;*/
-
+		board[x+1][y+1]->surr++;
+		*/
 		print(size);
 	}
 }
@@ -136,6 +144,5 @@ int main()
 	create(size);
 	cout<<"insert bomb\n";
 	cin>>bomb;
-	system("pause");
-
+	bomber(bomb,size);
 }
