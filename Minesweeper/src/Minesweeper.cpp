@@ -66,12 +66,37 @@ void bomber(int bomb,int size)
 			board[x-1][y-1]->surr++;
 		}
 
-		if(board[x][y-1]->mines==false && x>=1 && x<=size && y>=1 && y<=size)
+		if(board[x+1][y-1]->mines==false && x>=1 && x<=size && y>=1 && y<=size)
 		{
-			board[x][y-1]->surr++;
+			board[x+1][y-1]->surr++;
 		}
 
-		board[x-1][y-1]->surr++;
+		if(board[x-1][y]->mines==false && x>=1 && x<=size && y>=1 && y<=size)
+		{
+			board[x-1][y]->surr++;
+		}
+		
+		if(board[x+1][y]->mines==false && x>=1 && x<=size && y>=1 && y<=size)
+		{
+			board[x+1][y]->surr++;
+		}
+		
+		if(board[x-1][y+1]->mines==false && x>=1 && x<=size && y>=1 && y<=size)
+		{
+			board[x-1][y+1]->surr++;
+		}
+		
+		if(board[x][y+1]->mines==false && x>=1 && x<=size && y>=1 && y<=size)
+		{
+			board[x][y+1]->surr++;
+		}
+		
+		if(board[x+1][y+1]->mines==false && x>=1 && x<=size && y>=1 && y<=size)
+		{
+			board[x+1][y+1]->surr++;
+		}
+
+		/*board[x-1][y-1]->surr++;
 
 		board[x+1][y-1]->surr++;
 
@@ -83,7 +108,7 @@ void bomber(int bomb,int size)
 
 		board[x][y+1]->surr++;
 
-		board[x+1][y+1]->surr++;
+		board[x+1][y+1]->surr++;*/
 
 		print(size);
 	}
