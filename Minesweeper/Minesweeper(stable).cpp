@@ -19,7 +19,6 @@ struct block
 
 int checkx[9] = {0,1,1,0,-1,-1,-1,0,1};
 int checky[9] = {0,0,1,1,1,0,-1,-1,-1};
-
 int bomb;
 struct block * board[50][50];
 int size;
@@ -239,7 +238,6 @@ void open()
             flood(x,y);
             print();
         }
-
 	}
 	else
 	{
@@ -317,10 +315,8 @@ void bomber()
 	}
 }
 
-
 void create()
 {
-
 	for(int ctr=1;ctr<=size;ctr++)
 	{
 		for(int ctr1=1;ctr1<=size;ctr1++)
@@ -383,16 +379,8 @@ void scan()
     cout<<"bomb left = "<<bomb<<"\n";
 }
 
-void solver()
-{
-    auto x = Random::get(1,size);
-    auto y = Random::get(1,size);
-}
-
-
 int main()
 {
-
 	int choice;
 	cout<<"insert board size\n";
 	cin>>size;
@@ -402,7 +390,6 @@ int main()
 	bomber();
 	while(bomb!=0)
 	{
-
 		cout<<"open(1) || flag(2) || cheat(3)?\n";
 		cin>>choice;
 		switch(choice)
