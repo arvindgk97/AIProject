@@ -24,6 +24,7 @@ struct aibrain
 int checkx[9] = {0,1,1,0,-1,-1,-1,0,1};
 int checky[9] = {0,0,1,1,1,0,-1,-1,-1};
 
+int aistop=0;
 int bomb;
 struct block * board[50][50];
 int size;
@@ -600,6 +601,29 @@ aiscrounge(int newlowx,int newlowy)
     aianswer(newlowx,newlowy);
 }
 
+void aiflagcheck()
+{
+    //ai scans if there any move he could do
+    for(int ctr1=1;ctr1<=size;ctr1++)
+    {
+        for(int ctr2=1;ctr2<=size;ctr2++)
+        {
+            if(board[ctr2][ctr1]->status==0)
+            {
+                if(board[ctr2][ctr1]->flag!='!')
+                {
+                    if(board[ctr2][ctr1]->mines==false)
+                    {
+                        return;
+                    }
+                }
+            }
+        }
+    }
+    cout<<"the AI couldn't do anything at this point\n";
+    exit(0);
+}
+
 void aithink()
 {
     int low=0;
@@ -654,9 +678,31 @@ void aithink()
     // if yield same result ai will try to find a large 3x3 size unopened box
     if(lowlim==highlim)
     {
-        aiscrounge(newlowx,newlowy);
-        aiscan();
-        aithink();
+        if(newlowx==newhighx)
+        {
+            if(newlowy==newhighy)
+            {
+                if(board[newhighx][newhighy]->mines==true)
+                {
+                    bomb--;
+                    cout<<"flagging coordinate = "<<newhighx<<" , "<<newhighy<<"\n";
+                    board[newhighx][newhighy]->flag='!';
+                }
+                else
+                {
+                    cout<<"flagging coordinate = "<<newhighx<<" , "<<newhighy<<"\n";
+                    board[newhighx][newhighy]->flag='!';
+                }
+                    print();
+                    aiflagcheck();
+            }
+        }
+        else
+        {
+            aiscrounge(newlowx,newlowy);
+            aiscan();
+            aithink();
+        }
     }
     else
     {
@@ -673,6 +719,7 @@ void aithink()
             board[newhighx][newhighy]->flag='!';
         }
         print();
+        aiflagcheck();
     }
     aiscrounge(newlowx,newlowy);
     aiscan();
@@ -698,23 +745,27 @@ int main()
 	bomber();
 	while(bomb!=0)
 	{
+		aistop=0;
 		cout<<"open(1) || flag(2) || cheat(3) || solver(4)?\n";
 		cin>>choice;
-		switch(choice)
-		{
-			case 1:
-				open();
-				break;
-			case 2:
-				flag();
-				break;
-			case 3:
-				answer();
-				break;
-			case 4:
-				aisolver();
-				break;
-		}
+		while(aistop==0)
+        {
+            switch(choice)
+            {
+                case 1:
+                    open();
+                    break;
+                case 2:
+                    flag();
+                    break;
+                case 3:
+                    answer();
+                    break;
+                case 4:
+                    aisolver();
+                    break;
+            }
+        }
 	}
 	cout<<"you won";
 }
