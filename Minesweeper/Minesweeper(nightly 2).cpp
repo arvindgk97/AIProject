@@ -26,8 +26,6 @@ int checky[9] = {0,0,1,1,1,0,-1,-1,-1};
 
 int bomb;
 struct block * board[50][50];
-struct aibrain * aimemory[50][50];
-int first=0;
 int size;
 int spam=0;
 
@@ -179,7 +177,6 @@ void flood(int x, int y)
 		if(board[newx][newy]->status==0)
 		{
 			board[newx][newy]->status=1;
-			print();
 			flood(newx,newy);
 		}
 	}
@@ -216,7 +213,6 @@ void flag()
                 bomb--;
                 board[x][y]->flag='!';
             }
-
         }
         else
         {
@@ -245,7 +241,6 @@ void open()
             flood(x,y);
             print();
         }
-
 	}
 	else
 	{
@@ -336,20 +331,9 @@ void create()
 	print();
 }
 
-void createaimemory()
-{
-	for(int ctr=1;ctr<=size;ctr++)
-	{
-		for(int ctr1=1;ctr1<=size;ctr1++)
-		{
-			aimemory[ctr1][ctr]=new aibrain;
-		}
-	}
-	cout<<"ai created a blank memory board";
-}
-
 void printprob()
 {
+    cout<<"Ai Eye"<<endl;
     for(int ctr=1;ctr<=size;ctr++)
     {
         cout<<"  ";
@@ -467,54 +451,68 @@ void aiscan()
 
 void aiopen()
 {
-	while(first==0)
-	{
-	    auto x = Random::get(1,size);
-        auto y = Random::get(1,size);
-        if(board[x][y]->status==0)
+    int x2[50];
+    int y2[50];
+    int ctr3=1;
+    int x;
+    int y;
+    for(int ctr1=1;ctr1<=size;ctr1++)
+    {
+        for(int ctr2=1;ctr2<=size;ctr2++)
         {
-            cout<<"open coordinate = "<<x<<" , "<<y<<"\n";
-            if(board[x][y]->mines==false)
+            if(board[ctr2][ctr1]->status==0)
             {
-                if(board[x][y]->surr>=1)
-                {
-                    board[x][y]->status=1;
-                    first++;
-                    print();
-                }
-                else
-                {
-                    board[x][y]->status=1;
-                    first++;
-                    flood(x,y);
-                    print();
-                }
+                x2[ctr3]=ctr2;
+                y2[ctr3]=ctr1;
+                ctr3++;
+            }
+        }
+    }
+    auto aichoose = Random::get(1,ctr3);
+    x=x2[aichoose];
+    y=y2[aichoose];
+    if(board[x][y]->status==0)
+    {
+        cout<<"open coordinate = "<<x<<" , "<<y<<"\n";
+        if(board[x][y]->mines==false)
+        {
+            if(board[x][y]->surr>=1)
+            {
+                board[x][y]->status=1;
+                aiopen();
+                print();
             }
             else
             {
-                answer();
-                cout<<"ai lost\n";
-                system("Pause");
-                aiopen();
+                board[x][y]->status=1;
+                flood(x,y);
+                print();
             }
         }
         else
         {
-            aiopen();
+            answer();
+            cout<<"ai lost\n";
+            exit(0);
         }
     }
-    cout<<"open coordinate = "<<x[low]<<" , "<<y[low]<<"\n";
-    if(board[x[low]][y[low]]->mines==false)
+}
+
+aianswer(int newlowx, int newlowy)
+{
+    //ai open a block based on the lowest probability
+    cout<<"open coordinate = "<<newlowx<<" , "<<newlowy<<"\n";
+    if(board[newlowx][newlowy]->mines==false)
     {
-        if(board[x[low]][y[low]]->surr>=1)
+        if(board[newlowx][newlowy]->surr>=1)
         {
-            board[x[low]][y[low]]->status=1;
+            board[newlowx][newlowy]->status=1;
             print();
         }
         else
         {
-            board[x[low]][y[low]]->status=1;
-            flood(x,y);
+            board[newlowx][newlowy]->status=1;
+            flood(newlowx,newlowy);
             print();
         }
     }
@@ -522,89 +520,161 @@ void aiopen()
     {
         answer();
         cout<<"ai lost\n";
-        system("Pause");
-        aiopen();
+        exit(0);
     }
 }
 
-void aithink()
+aiscrounge(int newlowx,int newlowy)
 {
-    int x2[50];
-    int y2[50];
-    int calc[50];
-    int ctr3=1;
-    int lowlim=10;
-    int highlim=1;
-    int low=0;
-    int high=0;
-    float chance;
+    //ai scrounge for any 3x3 size unopened box first before using any probability and skip a flagged block
+    int boxx[9]={0,0,0,1,1,1,2,2,2};
+    int boxy[9]={0,1,2,0,1,2,0,1,2};
+    int box=0;
     for(int ctr1=1;ctr1<=size;ctr1++)
     {
         for(int ctr2=1;ctr2<=size;ctr2++)
         {
-            if(board[ctr2][ctr1]->status==0)
+            if(board[ctr2][ctr1]->flag!='!')
             {
-                if(board[ctr2][ctr1]->prob>=1)
+                if(board[ctr2][ctr1]->status==0)
                 {
-                    x2[ctr3]=ctr2;
-                    y2[ctr3]=ctr1;
-                    calc[ctr3]=board[ctr2][ctr1]->prob;
-                    ctr3++;
+                    for(int ctr=1;ctr<=9;ctr++)
+                    {
+                        int newx=ctr2+boxx[ctr];
+                        int newy=ctr1+boxy[ctr];
+                        if(newx<1 || newy<1 || newx>size || newy>size)
+                        {
+                            box=0;
+                            //cout<<"hit a wall"<<endl;
+                            continue;
+                        }
+                        if(board[newx][newy]->surr>=1)
+                        {
+                            box=0;
+                            //cout<<"hit a number"<<endl;
+                            continue;
+                        }
+                        if(board[newx][newy]->status==1)
+                        {
+                            box=0;
+                            //cout<<"hit an opened box"<<endl;
+                            continue;
+                        }
+                        if(board[newx][newy]->status==0)
+                        {
+                            box++;
+                            //cout<<"box++ "<<newx<<" , "<<newy<<"\n";
+                            if(box==8)
+                            {
+                                cout<<"3x3 detected"<<"\n";
+                                cout<<"open coordinate = "<<ctr2<<" , "<<ctr1<<"\n";
+                                if(board[ctr2][ctr1]->mines==false)
+                                {
+                                    if(board[ctr2][ctr1]->surr>=1)
+                                    {
+                                        board[ctr2][ctr1]->status=1;
+                                        aiscrounge(newlowx, newlowy);
+                                        print();
+                                    }
+                                    else
+                                    {
+                                        board[ctr2][ctr1]->status=1;
+                                        flood(ctr2,ctr1);
+                                        print();
+                                    }
+                                }
+                                else
+                                {
+                                    answer();
+                                    cout<<"ai lost\n";
+                                    exit(0);
+                                }
+                                box=0;
+                            }
+                        }
+                    }
                 }
             }
         }
     }
+    aianswer(newlowx,newlowy);
+}
+
+void aithink()
+{
+    int low=0;
+    int calc[50];
+    int ctr3=1;
+    int lowlim=10;
+    int highlim=1;
+    int high=0;
+    int x2[50];
+    int y2[50];
+    float chance;
+    //scan the board and collect the coordinate for any probability it carries but skips a flagged board
+    for(int ctr1=1;ctr1<=size;ctr1++)
+    {
+        for(int ctr2=1;ctr2<=size;ctr2++)
+        {
+            if(board[ctr2][ctr1]->flag!='!')
+            {
+                if(board[ctr2][ctr1]->status==0)
+                {
+                    if(board[ctr2][ctr1]->prob>=1)
+                    {
+                        x2[ctr3]=ctr2;
+                        y2[ctr3]=ctr1;
+                        calc[ctr3]=board[ctr2][ctr1]->prob;
+                        ctr3++;
+                    }
+                }
+            }
+        }
+    }
+    //calculate for the lowest and highest probability found with coord
     for(int ctr4=1; ctr4 < ctr3; ctr4++)
     {
-
         if (calc[ctr4] < lowlim)
         {
             lowlim = calc[ctr4];
             low=ctr4;
         }
-
         if (calc[ctr4] > highlim)
         {
             highlim = calc[ctr4];
             high=ctr4;
         }
     }
-    cout<<"The lowest prob is: "<<lowlim<<". coordinate is "<<x2[low]<<" , "<<y2[low]<<"\n";
-    cout<<"The highest prob is: "<<highlim<<". coordinate is "<<x2[high]<<" , "<<y2[high]<<"\n";
+    int newlowx=x2[low];
+    int newlowy=y2[low];
+    int newhighx=x2[high];
+    int newhighy=y2[high];
+    cout<<"The lowest prob is: "<<lowlim<<". coordinate is "<<newlowx<<" , "<<newlowy<<"\n";
+    cout<<"The highest prob is: "<<highlim<<". coordinate is "<<newhighx<<" , "<<newhighy<<"\n";
+    // if yield same result ai will try to find a large 3x3 size unopened box
     if(lowlim==highlim)
     {
-        aiopen();
+        aiscrounge(newlowx,newlowy);
         aiscan();
         aithink();
     }
     else
     {
-        chance= (float)lowlim/(float)highlim;
-        cout<<chance<<"\n";
-        auto aiflag = Random::get<bool>(chance);
-        if(aiflag==true)
+        //ai will automatically flag a high probability block
+        if(board[newhighx][newhighy]->mines==true)
         {
-            if(board[x2[high]][y2[high]]->mines==true)
-            {
-                if(spam>bomb)
-                {
-                    board[x2[high]][y2[high]]->flag='!';
-                }
-                else
-                {
-                    bomb--;
-                    board[x2[high]][y2[high]]->flag='!';
-                }
-
-            }
-            else
-            {
-                board[x2[high]][y2[high]]->flag='!';
-            }
+            bomb--;
+            cout<<"flagging coordinate = "<<newhighx<<" , "<<newhighy<<"\n";
+            board[newhighx][newhighy]->flag='!';
+        }
+        else
+        {
+            cout<<"flagging coordinate = "<<newhighx<<" , "<<newhighy<<"\n";
+            board[newhighx][newhighy]->flag='!';
         }
         print();
     }
-    aiopen();
+    aiscrounge(newlowx,newlowy);
     aiscan();
     aithink();
 }
