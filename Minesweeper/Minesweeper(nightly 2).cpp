@@ -334,7 +334,7 @@ void create()
 
 void printprob()
 {
-    cout<<"Ai Eye"<<endl;
+    cout<<"Displaying Ai's Eye"<<endl;
     for(int ctr=1;ctr<=size;ctr++)
     {
         cout<<"  ";
@@ -452,8 +452,8 @@ void aiscan()
 
 void aiopen()
 {
-    int x2[50];
-    int y2[50];
+    int x2[100];
+    int y2[100];
     int ctr3=1;
     int x;
     int y;
@@ -624,6 +624,104 @@ void aiflagcheck()
     exit(0);
 }
 
+aiobvious()
+{
+    int obvious=0;
+    int x2[100];
+    int y2[100];
+    //check around
+    for(int ctr1=1;ctr1<=size;ctr1++)
+    {
+        for(int ctr2=1;ctr2<=size;ctr2++)
+        {
+            if(board[ctr2][ctr1]->status==1)
+            {
+                if(board[ctr2][ctr1]->flag!='!')
+                {
+                    if(board[ctr2][ctr1]->surr>=1)
+                    {
+                        for(int ctr=1;ctr<=8;ctr++)
+                        {
+                            int newx=ctr2+checkx[ctr];
+                            int newy=ctr1+checky[ctr];
+                            if(newx<1 || newy<1 || newx>size || newy>size)
+                            {
+                                continue;
+                            }
+                            if(board[newx][newy]->surr>=1)
+                            {
+                                continue;
+                            }
+                            if(board[newx][newy]->status==1)
+                            {
+                                continue;
+                            }
+                            if(board[newx][newy]->flag=='!')
+                            {
+
+                                obvious++;
+                                x2[obvious]=newx;
+                                y2[obvious]=newy;
+                                continue;
+                            }
+                            if(board[newx][newy]->status==0)
+                            {
+                                obvious++;
+                                x2[obvious]=newx;
+                                y2[obvious]=newy;
+                            }
+                        }
+                    }
+                }
+            }
+            if(obvious==board[ctr2][ctr1]->surr)
+            {
+                //cout<<"obvious found"<<endl;
+                for(int ctr=1;ctr<=obvious;obvious++)
+                {
+                    if(board[x2[ctr]][y2[ctr]]->flag=='!')
+                    {
+                        continue;
+                    }
+                    if(board[x2[ctr]][y2[ctr]]->status==0)
+                    {
+                        if(board[x2[ctr]][y2[ctr]]->mines==true)
+                        {
+                            bomb--;
+                            cout<<"flagging obvious coordinate = "<<x2[ctr]<<" , "<<y2[ctr]<<"\n";
+                            board[x2[ctr]][y2[ctr]]->flag='!';
+                            if(bomb==0)
+                            {
+                                cout<<"AI Wins"<<endl;
+                                print();
+                                exit(0);
+                            }
+                            print();
+                            aiflagcheck();
+                            aiobvious;
+                        }
+                        else
+                        {
+                            cout<<"flagging obvious coordinate = "<<x2[ctr]<<" , "<<y2[ctr]<<"\n";
+                            board[x2[ctr]][y2[ctr]]->flag='!';
+                            cout<<"AI Missed The Flag"<<endl;
+                            if(bomb==0)
+                            {
+                                cout<<"AI Wins"<<endl;
+                                print();
+                                exit(0);
+                            }
+                            print();
+                            aiflagcheck();
+                            aiobvious;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 void aithink()
 {
     int low=0;
@@ -632,8 +730,8 @@ void aithink()
     int lowlim=10;
     int highlim=1;
     int high=0;
-    int x2[50];
-    int y2[50];
+    int x2[100];
+    int y2[100];
     float chance;
     //scan the board and collect the coordinate for any probability it carries but skips a flagged board
     for(int ctr1=1;ctr1<=size;ctr1++)
@@ -686,12 +784,25 @@ void aithink()
                 {
                     bomb--;
                     cout<<"flagging coordinate = "<<newhighx<<" , "<<newhighy<<"\n";
+                    if(bomb==0)
+                    {
+                        cout<<"AI Wins"<<endl;
+                        print();
+                        exit(0);
+                    }
                     board[newhighx][newhighy]->flag='!';
                 }
                 else
                 {
                     cout<<"flagging coordinate = "<<newhighx<<" , "<<newhighy<<"\n";
                     board[newhighx][newhighy]->flag='!';
+                    cout<<"AI Missed The Flag"<<endl;
+                    if(bomb==0)
+                    {
+                        cout<<"AI Wins"<<endl;
+                        print();
+                        exit(0);
+                    }
                 }
                     print();
                     aiflagcheck();
@@ -699,9 +810,9 @@ void aithink()
         }
         else
         {
+            aiobvious();
             aiscrounge(newlowx,newlowy);
             aiscan();
-            aithink();
         }
     }
     else
@@ -712,23 +823,39 @@ void aithink()
             bomb--;
             cout<<"flagging coordinate = "<<newhighx<<" , "<<newhighy<<"\n";
             board[newhighx][newhighy]->flag='!';
+            if(bomb==0)
+            {
+                cout<<"AI Wins"<<endl;
+                print();
+                exit(0);
+            }
         }
         else
         {
             cout<<"flagging coordinate = "<<newhighx<<" , "<<newhighy<<"\n";
             board[newhighx][newhighy]->flag='!';
+            if(bomb==0)
+            {
+                cout<<"AI Wins"<<endl;
+                print();
+                exit(0);
+            }
         }
         print();
         aiflagcheck();
     }
+    aiobvious();
     aiscrounge(newlowx,newlowy);
     aiscan();
     aithink();
 }
 
+
+
 void aisolver()
 {
     aiopen();
+    aiobvious();
     aiscan();
     aithink();
 }
